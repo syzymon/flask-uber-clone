@@ -9,31 +9,13 @@ from flask_uber_clone.database import (
     Model,
     SurrogatePK,
     db,
-    reference_col,
-    relationship,
 )
 from flask_uber_clone.extensions import bcrypt
 
 
-class Role(SurrogatePK, Model):
-    """A role for a user."""
-
-    __tablename__ = "roles"
-    name = Column(db.String(80), unique=True, nullable=False)
-    user_id = reference_col("users", nullable=True)
-    user = relationship("User", backref="roles")
-
-    def __init__(self, name, **kwargs):
-        """Create instance."""
-        db.Model.__init__(self, name=name, **kwargs)
-
-    def __repr__(self):
-        """Represent instance as a unique string."""
-        return f"<Role({self.name})>"
-
-
 class User(UserMixin, SurrogatePK, Model):
-    """A user of the app."""
+    """An abstract user of the app."""
+    __abstract__ = True
 
     __tablename__ = "users"
     username = Column(db.String(80), unique=True, nullable=False)

@@ -50,7 +50,7 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    # app.register_blueprint(user.views.blueprint)
     app.register_blueprint(rider.views.blueprint, url_prefix="/ride")
     return None
 
@@ -74,7 +74,7 @@ def register_shellcontext(app):
 
     def shell_context():
         """Shell context objects."""
-        return {"db": db, "User": user.models.User}
+        return {"db": db}
 
     app.shell_context_processor(shell_context)
 
