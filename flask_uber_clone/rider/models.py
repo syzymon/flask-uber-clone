@@ -9,7 +9,7 @@ class Rider(User):
         'concrete': True
     }
 
+    __tablename__ = "riders"
+
     def get_id(self):
         return 2 * self.id
-
-    __tablename__ = "riders"

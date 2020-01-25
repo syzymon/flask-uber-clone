@@ -1,2 +1,118 @@
 {% extends "layout.html" %}
 
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+
+            <h1 class="display-4">Price estimator</h1>
+            <p>Sample rider prices are estimates only and do not reflect
+                variations due to discounts, geography, traffic delays, or other
+                factors. Flat rates and minimum fees may apply. Actual prices
+                for rides and scheduled rides may vary.
+            </p>
+
+        </div>
+    </div><!-- /.jumbotron -->
+
+    <div class="container">
+        <form id="registerForm" class="form form-register" method="POST"
+              action="" role="form">
+            <div class="form-row align-items-center">
+                <div class="form-row">
+                    <div class="col-auto">
+                        <label for="x1">Pickup x</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">X</div>
+                            </div>
+                            <input type="number" class="form-control"
+                                   id="x1" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <label for="y1">Pickup y</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Y</div>
+                            </div>
+                            <input type="number" class="form-control"
+                                   id="y1" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row mt-3 mb-3">
+                    <div class="col-auto">
+                        <label for="x2">Destination x</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">X</div>
+                            </div>
+                            <input type="number" class="form-control"
+                                   id="x2" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <label for="y2">Destination y</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Y</div>
+                            </div>
+                            <input type="number" class="form-control"
+                                   id="y2" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <label for="ppl_cnt">How many people?</label>
+                        <div class="input-group mb-2">
+                            <input type="number" class="form-control"
+                                   id="ppl_cnt" placeholder="1">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="button" class="btn btn-outline-info mb-2" id="calc">
+                Calculate
+            </button>
+
+            <button type="submit" class="btn btn-primary mb-2" id="calc">
+                Request a ride!
+            </button>
+        </form>
+
+        <h3 id="price_est" hidden>21.37</h3>
+    </div>
+
+
+    <script type="text/javascript">
+      const b = document.getElementById('calc');
+      const x1 = document.getElementById('x1'),
+        x2 = document.getElementById('x2'),
+        y1 = document.getElementById('y1'),
+        y2 = document.getElementById('y2'),
+        cnt = document.getElementById('ppl_cnt');
+
+      const price_est = document.getElementById('price_est');
+
+      function estimatePrice(x_1, y_1, x_2, y_2, ppl_cnt) {
+        return (Math.abs(x_1 - x_2) + Math.abs(y_1 - y_2)) * 2.137
+          * Math.log(1 + Math.max(1, ppl_cnt));
+      }
+
+      function updateEstimate() {
+        price_est.hidden = false;
+        const counter = cnt.value ? parseInt(cnt.value) : 1;
+
+        price_est.textContent = estimatePrice(x1.value, y1.value, x2.value, y2.value,
+          counter)
+          .toFixed(2) + ' PLN';
+      }
+
+      b.addEventListener('click', updateEstimate, true);
+    </script>
+{% endblock %}

@@ -10,7 +10,7 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 
 from flask_uber_clone.utils import flash_errors
 from .models import Driver
@@ -21,9 +21,10 @@ blueprint = Blueprint("driver", __name__, static_folder="../static")
 
 def load_user(user_id):
     """Load user by ID."""
+    user_id = int(user_id)
     if user_id % 2 == 0:
         return None
-    return Driver.get_by_id(int(user_id / 2))
+    return Driver.get_by_id(user_id / 2)
 
 
 @blueprint.record_once
@@ -47,6 +48,8 @@ def home():
 @blueprint.route("/login", methods=["GET", "POST"])
 def login():
     """Driver login."""
+    if current_user.is_authenticated:
+        return redirect(url_for("driver.home"))
     form = DriverLoginForm(request.form)
     # Handle logging in
     if request.method == "POST":

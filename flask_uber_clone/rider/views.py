@@ -22,9 +22,10 @@ blueprint = Blueprint("rider", __name__, static_folder="../static")
 
 def load_user(user_id):
     """Load user by ID."""
+    user_id = int(user_id)
     if user_id % 2 == 1:
         return None
-    return Rider.get_by_id(int(user_id / 2))
+    return Rider.get_by_id(user_id / 2)
 
 
 @blueprint.record_once
@@ -48,6 +49,8 @@ def home():
 @blueprint.route("/login", methods=["GET", "POST"])
 def login():
     """Rider login."""
+    if current_user.is_authenticated:
+        return redirect(url_for("rider.home"))
     form = RiderLoginForm(request.form)
     current_app.logger.info("Hello from the home page!")
     # Handle logging in
