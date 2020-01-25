@@ -12,9 +12,9 @@ from flask import (
 from flask_login import login_required, login_user, logout_user
 
 from flask_uber_clone.extensions import login_manager
-from flask_uber_clone.user.forms import LoginForm
+from flask_uber_clone.rider.forms import RiderLoginForm
 from flask_uber_clone.user.forms import RegisterForm
-from flask_uber_clone.user.models import User
+from flask_uber_clone.rider.models import Rider
 from flask_uber_clone.utils import flash_errors
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
@@ -23,13 +23,13 @@ blueprint = Blueprint("public", __name__, static_folder="../static")
 @login_manager.user_loader
 def load_user(user_id):
     """Load user by ID."""
-    return User.get_by_id(int(user_id))
+    return Rider.get_by_id(int(user_id))
 
 
 @blueprint.route("/", methods=["GET", "POST"])
 def home():
     """Home page."""
-    form = LoginForm(request.form)
+    form = RiderLoginForm(request.form)
     current_app.logger.info("Hello from the home page!")
     # Handle logging in
     if request.method == "POST":
@@ -52,26 +52,8 @@ def logout():
     return redirect(url_for("public.home"))
 
 
-@blueprint.route("/register/", methods=["GET", "POST"])
-def register():
-    """Register new user."""
-    form = RegisterForm(request.form)
-    if form.validate_on_submit():
-        User.create(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-            active=True,
-        )
-        flash("Thank you for registering. You can now log in.", "success")
-        return redirect(url_for("public.home"))
-    else:
-        flash_errors(form)
-    return render_template("public/register.html", form=form)
-
-
 @blueprint.route("/about/")
 def about():
     """About page."""
-    form = LoginForm(request.form)
+    form = RiderLoginForm(request.form)
     return render_template("public/about.html", form=form)
