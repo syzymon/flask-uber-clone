@@ -33,7 +33,7 @@
         </ul>
         {% else %}
             {% if form %}
-            <form class="form-inline" id="loginForm" method="POST" action="{{ url_for('rider.login') }}" role="login">
+            <form class="form-inline" id="loginForm" method="POST" action="{{ url_for(request.blueprint + '.login') }}" role="login">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
               <div class="input-group mb-2 mr-sm-2">
                 {{ form.username(placeholder="Username", class_="form-control mr-sm-1 my-auto") }} {{ form.password(placeholder="Password",

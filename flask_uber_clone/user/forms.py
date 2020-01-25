@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """User forms."""
+from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
@@ -35,7 +36,8 @@ class RegisterForm(FlaskForm):
         initial_validation = super(RegisterForm, self).validate()
         if not initial_validation:
             return False
-        user = self.USER_MODEL.query.filter_by(username=self.username.data).first()
+        user = self.USER_MODEL.query.filter_by(
+            username=self.username.data).first()
         if user:
             self.username.errors.append("Username already registered")
             return False
@@ -48,7 +50,7 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Login form."""
-    USER_MODEL = User
+    USER_MODEL = None  # abstract
 
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
@@ -64,7 +66,8 @@ class LoginForm(FlaskForm):
         if not initial_validation:
             return False
 
-        self.user = self.USER_MODEL.query.filter_by(username=self.username.data).first()
+        self.user = self.USER_MODEL.query.filter_by(
+            username=self.username.data).first()
         if not self.user:
             self.username.errors.append("Unknown username")
             return False

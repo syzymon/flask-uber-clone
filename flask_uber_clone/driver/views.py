@@ -10,7 +10,7 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user, logout_user
 
 from flask_uber_clone.utils import flash_errors
 from .models import Driver
@@ -21,7 +21,9 @@ blueprint = Blueprint("driver", __name__, static_folder="../static")
 
 def load_user(user_id):
     """Load user by ID."""
-    return Driver.get_by_id(int(user_id))
+    if user_id % 2 == 0:
+        return None
+    return Driver.get_by_id(int(user_id / 2))
 
 
 @blueprint.record_once
@@ -52,11 +54,11 @@ def login():
             login_user(form.user)
             flash("You are logged in.", "success")
             redirect_url = request.args.get("next") or url_for(
-                "public.home")
+                "driver.home")
             return redirect(redirect_url)
         else:
             flash_errors(form)
-    return render_template("driver/index.html", form=form)
+    return render_template("public/login.html", form=form)
 
 
 @blueprint.route("/register/", methods=["GET", "POST"])
@@ -75,3 +77,12 @@ def register():
     else:
         flash_errors(form)
     return render_template("public/register.html", form=form)
+
+
+@blueprint.route("/logout/")
+@login_required
+def logout():
+    """Logout."""
+    logout_user()
+    flash("You are logged out.", "info")
+    return redirect(request.args.get("next") or url_for("driver.home"))

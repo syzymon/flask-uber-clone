@@ -34,3 +34,6 @@ class Driver(User):
     experience = Column(db.Integer, nullable=False, default=0)
 
     car_id = reference_col("cars", nullable=True)
+
+    def get_id(self):
+        return 2 * self.id + 1

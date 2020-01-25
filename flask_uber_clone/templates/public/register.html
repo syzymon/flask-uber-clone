@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container-narrow">
-  <h1 class="mt-5">Register</h1>
+  <h1 class="mt-5">Register ({{ request.blueprint }})</h1>
     <br/>
     <form id="registerForm" class="form form-register" method="POST" action="" role="form">
            {{ form.csrf_token }}
@@ -25,7 +25,7 @@
             </div>
             <p><input class="btn btn-primary" type="submit" value="Register"></p>
     </form>
-    <p><em>Already registered?</em> Click <a href="/">here</a> to login.</p>
+    <p><em>Already registered?</em> Click <a href="{{ url_for(request.blueprint + '.login') }}">here</a> to login.</p>
 </div>
 {% endblock %}
 

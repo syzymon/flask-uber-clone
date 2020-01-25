@@ -22,7 +22,9 @@ blueprint = Blueprint("rider", __name__, static_folder="../static")
 
 def load_user(user_id):
     """Load user by ID."""
-    return Rider.get_by_id(int(user_id))
+    if user_id % 2 == 1:
+        return None
+    return Rider.get_by_id(int(user_id / 2))
 
 
 @blueprint.record_once
@@ -54,11 +56,11 @@ def login():
             login_user(form.user)
             flash("You are logged in.", "success")
             redirect_url = request.args.get("next") or url_for(
-                "public.home")
+                "rider.home")
             return redirect(redirect_url)
         else:
             flash_errors(form)
-    return render_template("rider/index.html", form=form)
+    return render_template("public/login.html", form=form)
 
 
 @blueprint.route("/register/", methods=["GET", "POST"])
@@ -85,4 +87,4 @@ def logout():
     """Logout."""
     logout_user()
     flash("You are logged out.", "info")
-    return redirect(request.args.get("next") or url_for("public.home"))
+    return redirect(request.args.get("next") or url_for("rider.home"))
