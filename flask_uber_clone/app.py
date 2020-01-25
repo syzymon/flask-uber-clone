@@ -5,7 +5,7 @@ import sys
 
 from flask import Flask, render_template
 
-from flask_uber_clone import commands, public, user
+from flask_uber_clone import commands, public, user, rider
 from flask_uber_clone.extensions import (
     bcrypt,
     cache,
@@ -51,6 +51,7 @@ def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(rider.views.blueprint, url_prefix="/ride")
     return None
 
 
