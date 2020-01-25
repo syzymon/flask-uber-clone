@@ -1,3 +1,4 @@
+{% set public = request.blueprint == "public" %}
 
 <!DOCTYPE html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -12,7 +13,7 @@
 
     <link rel="shortcut icon" href="{{static_url_for('static', filename='build/img/favicon.ico') }}">
     <title>
-      {% block page_title %} 
+      {% block page_title %}
       Flask Taxi App
        {% endblock %}
     </title>

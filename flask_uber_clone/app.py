@@ -3,7 +3,7 @@
 import logging
 import sys
 
-from flask import Flask, render_template
+from flask import Flask, render_template, globals, request
 
 from flask_uber_clone import commands, public, rider, driver
 from flask_uber_clone.extensions import (
@@ -16,6 +16,24 @@ from flask_uber_clone.extensions import (
     login_manager,
     migrate,
 )
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    This will be used many times like on using current_user
+    :param user_id: username
+    :return: user or none
+    """
+    # http://librelist.com/browser/flask/2012/4/7/current-blueprint/#44814417e8289f5f5bb9683d416ee1ee
+    blueprint = globals.current_app.blueprints[request.blueprint]
+
+    print(blueprint)
+    if hasattr(blueprint, "load_user"):
+        return blueprint.load_user(user_id)
+
+    # https://flask-login.readthedocs.org/en/latest/#how-it-works
+    return None
 
 
 def create_app(config_object="flask_uber_clone.settings"):

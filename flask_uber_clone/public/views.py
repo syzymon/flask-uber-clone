@@ -11,19 +11,11 @@ from flask import (
 )
 from flask_login import login_required, login_user, logout_user
 
-from flask_uber_clone.extensions import login_manager
 from flask_uber_clone.rider.forms import RiderLoginForm
-from flask_uber_clone.user.forms import RegisterForm
 from flask_uber_clone.rider.models import Rider
 from flask_uber_clone.utils import flash_errors
 
 blueprint = Blueprint("public", __name__, static_folder="../static")
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    """Load user by ID."""
-    return Rider.get_by_id(int(user_id))
 
 
 @blueprint.route("/", methods=["GET", "POST"])
@@ -43,13 +35,16 @@ def home():
     return render_template("public/home.html", form=form)
 
 
-@blueprint.route("/logout/")
-@login_required
-def logout():
-    """Logout."""
-    logout_user()
-    flash("You are logged out.", "info")
-    return redirect(url_for("public.home"))
+@blueprint.route("/login", methods=["GET"])
+def dispatch_login():
+    """Login dispatch between rider and driver"""
+    return render_template("public/login_dispatch.html")
+
+
+@blueprint.route("/register", methods=["GET"])
+def dispatch_register():
+    """Login dispatch between rider and driver"""
+    return render_template("public/register_dispatch.html")
 
 
 @blueprint.route("/about/")
