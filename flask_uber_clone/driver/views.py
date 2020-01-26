@@ -3,7 +3,6 @@
 
 from flask import (
     Blueprint,
-    current_app,
     flash,
     redirect,
     render_template,
@@ -13,10 +12,10 @@ from flask import (
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_paginate import Pagination, get_page_parameter
 
-from flask_uber_clone.utils import flash_errors
-from .models import Driver
 from flask_uber_clone.rider.models import Order
-from .forms import DriverLoginForm, DriverRegisterForm
+from flask_uber_clone.utils import flash_errors
+from .forms import DriverLoginForm, DriverRegisterForm, AcceptOrderForm
+from .models import Driver
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
 
@@ -50,14 +49,34 @@ def home():
         search = True
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 15
+    offset = (page - 1) * per_page
 
-    orders = Order.query
-    pagination = Pagination(page=page, total=orders.count(), search=search,
+    orders_query = Order.query
+    orders = orders_query.limit(per_page).offset(offset)
+
+    pagination = Pagination(page=page, per_page=per_page,
+                            total=orders_query.count(),
+                            search=search,
                             bs_version=4,
                             record_name='orders')
 
     return render_template("driver/index.html", orders=orders,
                            pagination=pagination)
+
+
+@blueprint.route("/order/<int:order_id>", methods=["GET", "POST"])
+@login_required
+def order(order_id):
+    order = Order.query.get_or_404(order_id)
+    form = AcceptOrderForm(request.form)
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            flash("Hello world!", "info")
+            return redirect(url_for("driver.home"))
+
+    return render_template("driver/order.html", order=order, accept_form=form)
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
