@@ -18,7 +18,7 @@
                 <tbody>
                 {% for order in orders %}
                     <tr class='clickable-row'
-                        data-href='url://{{ url_for('driver.order', order_id=order.id) }}'>
+                        data-href='{{ url_for('driver.order', order_id=order.id) }}'>
                         <td>{{ loop.index + pagination.skip }}</td>
                         <td>{{ order.route.x1 }}</td>
                         <td>{{ order.route.y1 }}</td>
@@ -52,9 +52,25 @@
             padding: .1em .25em;
             font-size: 150%;
         }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+
     </style>
 {% endblock %}
 
 {% block js %}
     {{ super() }}
+
+    <script type="text/javascript">
+      $(document)
+        .ready(function ($) {
+          $('.clickable-row')
+            .click(function () {
+              window.document.location = $(this)
+                .data('href');
+            });
+        });
+    </script>
 {% endblock %}

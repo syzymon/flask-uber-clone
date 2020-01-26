@@ -18,3 +18,7 @@ class DriverLoginForm(LoginForm):
 
 class AcceptOrderForm(FlaskForm):
     pass
+
+
+class FinishOrderForm(FlaskForm):
+    pass

@@ -12,10 +12,9 @@ from flask import (
 from flask_login import login_user, login_required, current_user, logout_user
 
 from flask_uber_clone.utils import flash_errors
-
-from .models import Rider, Route, Order
 from .forms import RiderLoginForm, RiderRegisterForm, NewOrderForm, \
     CancelOrderForm
+from .models import Rider, Route, PendingOrder
 
 blueprint = Blueprint("rider", __name__, static_folder="../static")
 
@@ -43,13 +42,13 @@ def on_load(state):
 @blueprint.route("/", methods=["GET", "POST"])
 @login_required
 def home():
-    order_form = NewOrderForm(request.form)
-
-    existing_order = Order.query.filter_by(rider_id=current_user.id).first()
-    if existing_order:
+    if current_user.pending_order:
         delete_form = CancelOrderForm()
-        return render_template("rider/order.html", order=existing_order,
+        return render_template("rider/order.html",
+                               order=current_user.pending_order,
                                delete_form=delete_form)
+
+    order_form = NewOrderForm(request.form)
 
     if request.method == "POST":
         if order_form.validate_on_submit():
@@ -60,7 +59,7 @@ def home():
                 y2=order_form.y2.data
             )
 
-            Order.create(
+            PendingOrder.create(
                 rider_id=current_user.id,
                 route_id=route.id,
                 people_count=order_form.ppl_cnt.data
@@ -78,7 +77,7 @@ def home():
 def cancel_order(order_id):
     form = CancelOrderForm(request.form)
     if form.validate_on_submit():
-        order = Order.query.get_or_404(order_id)
+        order = PendingOrder.query.get_or_404(order_id)
 
         if order and order.rider_id == current_user.id:
             order.delete()
