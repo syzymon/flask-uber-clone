@@ -35,6 +35,10 @@ class Route(SurrogatePK, Model):
     x2 = Column(db.Integer, nullable=False)
     y2 = Column(db.Integer, nullable=False)
 
+    @property
+    def length(self):
+        return abs(self.x1 - self.x2) + abs(self.y1 - self.y2)
+
 
 class OrderState(SurrogatePK, Model):
     """Abstract class representing order state (an integral part of order

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Rider forms."""
 from flask_wtf import FlaskForm
+from wtforms.fields.html5 import DecimalField
+from wtforms.validators import DataRequired, NumberRange
 
 from flask_uber_clone.user.forms import LoginForm, RegisterForm
 from .models import Driver
@@ -21,4 +23,6 @@ class AcceptOrderForm(FlaskForm):
 
 
 class FinishOrderForm(FlaskForm):
-    pass
+    fare_rate = DecimalField(label="Enter fare rate when ride finished",
+                             places=2,
+                             validators=[DataRequired(), NumberRange(0, 5)])

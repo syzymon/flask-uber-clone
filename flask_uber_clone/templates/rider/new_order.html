@@ -1,6 +1,6 @@
-{% extends "layout.html" %}
+{% extends "rider/base.html" %}
 
-{% block content %}
+{% block content_section %}
     <div class="jumbotron">
         <div class="container">
 
@@ -54,7 +54,6 @@
 
                     <div class="col-auto">
                         {{ order_form.y2.label }}
-                        <label for="y2">Destination y</label>
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">Y</div>
@@ -84,8 +83,10 @@
 
         <h3 id="price_est" hidden>21.37</h3>
     </div>
+{% endblock %}
 
-
+{% block js %}
+    {{ super() }}
     <script type="text/javascript">
       const b = document.getElementById('calc');
       const x1 = document.getElementById('x1'),

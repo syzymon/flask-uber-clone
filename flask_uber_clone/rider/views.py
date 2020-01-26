@@ -69,7 +69,7 @@ def home():
         else:
             flash_errors(order_form)
 
-    return render_template("rider/index.html", order_form=order_form)
+    return render_template("rider/new_order.html", order_form=order_form)
 
 
 @blueprint.route("/order/<int:order_id>/delete", methods=["POST"])

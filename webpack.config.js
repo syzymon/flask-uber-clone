@@ -28,6 +28,9 @@ module.exports = {
       path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'css', 'bootstrap.css'),
       path.join(__dirname, 'assets', 'css', 'style.css'),
     ],
+    sidebar_css: [
+      path.join(__dirname, 'assets', 'css', 'sidebar.css'),
+    ],
   },
   mode: debug,
   output: {

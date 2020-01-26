@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Driver section, including drive selection and car management."""
+import math
 
 from flask import (
     Blueprint,
@@ -74,8 +75,8 @@ def home():
 @blueprint.route("/order/<int:order_id>", methods=["GET", "POST"])
 @login_required
 def order(order_id):
-    # if current_user.taken_order:
-    #     return redirect(url_for("driver.home"))
+    if current_user.taken_order:
+        return redirect(url_for("driver.home"))
 
     pending = PendingOrder.query.get_or_404(order_id)
     form = AcceptOrderForm(request.form)
@@ -96,9 +97,15 @@ def finish_order(order_id):
     form = FinishOrderForm(request.form)
 
     if form.validate_on_submit():
-        # TODO: transactions?
-        FinishedOrder.create_from_taken(taken)
+        finished = FinishedOrder.create_from_taken(taken)
+
+        calculated_price = taken.route.length * float(
+            form.fare_rate.data) * math.log1p(taken.people_count)
+
+        finished.update(price=round(calculated_price, 2))
         taken.delete()
+    else:
+        flash_errors(form)
 
     return redirect(url_for("driver.home"))
 

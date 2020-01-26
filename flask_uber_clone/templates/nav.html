@@ -26,7 +26,7 @@
             <a class="nav-link" href="#">Logged in as {{ current_user.username }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('rider.logout') }}">
+            <a class="nav-link" href="{{ url_for(request.blueprint + '.logout') }}">
               <i class="fa fa-sign-out"></i>
             </a>
           </li>

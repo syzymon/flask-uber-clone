@@ -1,0 +1,26 @@
+{% extends "rider/base.html" %}
+
+{% block content_section %}
+    <h1>Current order</h1>
+    <ul>
+        <li>Distance: {{ (order.route.x1 - order.route.x2)|abs +
+                                (order.route.y1 - order.route.y2)|abs }}</li>
+        <li>Start:
+            ({{ order.route.x1 }}, {{ order.route.y1 }})
+        </li>
+        <li>Destination:
+            ({{ order.route.x2 }}, {{ order.route.y2 }})
+        </li>
+        <li>People count: {{ order.people_count }}</li>
+    </ul>
+
+    <form method="post"
+          action="{{ url_for('rider.cancel_order', order_id=order.id) }}">
+        {{ delete_form.csrf_token }}
+        <button type="submit" class="btn btn-danger mb-2"
+                id="calc">
+            Cancel
+        </button>
+    </form>
+{% endblock %}
+

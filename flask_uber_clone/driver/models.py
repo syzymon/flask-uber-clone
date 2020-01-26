@@ -75,6 +75,7 @@ class FinishedOrder(OrderState):
     driver = relationship("Driver",
                           backref=db.backref("finished_orders"))
 
+    price = Column(db.Float, nullable=True)
     rating = Column(db.Float, nullable=True)
 
     taken = Column(db.DateTime)

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Your current job ID: {{ order.route.id }}</h1>
+        <ul>
+            <li>Distance: {{ order.route.length }}</li>
+            <li>Start: ({{ order.route.x1 }}, {{ order.route.y1 }})</li>
+            <li>Destination: ({{ order.route.x2 }}, {{ order.route.y2 }})</li>
+            <li>People count: {{ order.people_count }}</li>
+        </ul>
+
+        <form method="post"
+              action="{{ url_for('driver.finish_order', order_id=order.id) }}">
+            {{ finish_form.csrf_token }}
+
+            {{ finish_form.fare_rate.label(id="finish-label") }}
+
+            {{ finish_form.fare_rate(placeholder=2.137, class_="form-control") }}
+
+            <button type="submit" class="btn btn-primary mt-2" id="calc">
+                Finish
+            </button>
+        </form>
+    </div>
+
+    <style>
+        #finish-label {
+            font-size: 1.5em;
+        }
+    </style>
+
+{% endblock %}
+
