@@ -10,6 +10,7 @@ from flask import (
     url_for,
 )
 from flask_login import login_user, login_required, current_user, logout_user
+from flask_paginate import get_page_parameter, Pagination
 
 from flask_uber_clone.utils import flash_errors
 from .forms import RiderLoginForm, RiderRegisterForm, NewOrderForm, \
@@ -86,6 +87,26 @@ def cancel_order(order_id):
         flash_errors(form)
 
     return redirect(url_for("rider.home"))
+
+
+@blueprint.route("/history", methods=["GET"])
+@login_required
+def history():
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 15
+    offset = (page - 1) * per_page
+
+    orders_query = current_user.finished_orders
+    orders = orders_query.limit(per_page).offset(offset)
+
+    pagination = Pagination(page=page, per_page=per_page,
+                            total=orders_query.count(),
+                            bs_version=4,
+                            record_name='orders')
+
+    return render_template("rider/history.html",
+                           orders=orders,
+                           pagination=pagination)
 
 
 @blueprint.route("/login/", methods=["GET", "POST"])

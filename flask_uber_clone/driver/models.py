@@ -72,6 +72,10 @@ class FinishedOrder(OrderState):
     __tablename__ = "finished"
 
     driver_id = reference_col("drivers")
+
+    rider = relationship("Rider",
+                         backref=db.backref("finished_orders", lazy="dynamic"))
+
     driver = relationship("Driver",
                           backref=db.backref("finished_orders"))
 

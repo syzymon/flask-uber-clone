@@ -1,0 +1,36 @@
+{% extends "rider/base.html" %}
+
+{% block content_section %}
+    {{ pagination.links }}
+
+    {% for order in orders %}
+        <div class="media border position-relative mt-3">
+            <img src="https://via.placeholder.com/120" class="mr-3" alt="...">
+            <div class="media-body row">
+                <div class="col">
+                    <h5 class="mt-0">{{ order.finished.strftime("%a, %d %b %Y %H:%M:%S") }}</h5>
+                    <h6><i class="fa fa-map-marker text-success"
+                           aria-hidden="true"></i>
+                        ({{ order.route.x1 }}, {{ order.route.y1 }})</h6>
+                    <h6><i class="fa fa-map-marker text-danger"
+                           aria-hidden="true"></i>
+                        ({{ order.route.x2 }}, {{ order.route.y2 }})</h6>
+                    {% if not order.rating %}
+                        <a href="#" class="stretched-link">Rate the trip</a>
+                    {% else %}
+                        {{ order.rating }}
+                    {% endif %}
+                </div>
+
+                <div class="col-auto align-self-center">
+                    <h1 class="text-success display-4">
+                        <i class="fa fa-usd"
+                           aria-hidden="true"></i>{{ order.price }}
+                    </h1>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {{ pagination.links }}
+{% endblock %}
