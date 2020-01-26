@@ -1,0 +1,20 @@
+{% extends "rider/order.html" %}
+
+{% set taken = True %}
+
+{% block order_data %}
+    {{ super() }}
+
+    <h5><i class="fa fa-user-circle"
+           aria-hidden="true"></i> {{ current_order.driver.full_name }}</h5>
+
+    <h5><i class="fa fa-taxi"
+           aria-hidden="true"></i> {{ current_order.driver.car.car_name }}, {{ current_order.driver.car.lic_plate }}
+    </h5>
+
+    <div class="alert alert-danger" role="alert">
+        You cannot close the order since it is currently executed.
+    </div>
+{% endblock %}
+
+{% block form %} {% endblock %}

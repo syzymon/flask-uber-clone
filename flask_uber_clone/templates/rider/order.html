@@ -1,26 +1,39 @@
 {% extends "rider/base.html" %}
 
-{% block content_section %}
-    <h1>Current order</h1>
-    <ul>
-        <li>Distance: {{ (order.route.x1 - order.route.x2)|abs +
-                                (order.route.y1 - order.route.y2)|abs }}</li>
-        <li>Start:
-            ({{ order.route.x1 }}, {{ order.route.y1 }})
-        </li>
-        <li>Destination:
-            ({{ order.route.x2 }}, {{ order.route.y2 }})
-        </li>
-        <li>People count: {{ order.people_count }}</li>
-    </ul>
+{% if taken %}
+    {% set current_order = current_user.taken_order %}
+{% elif finished_order %}
+    {% set current_order = finished_order %}
+{% else %}
+    {% set current_order = current_user.pending_order %}
+{% endif %}
 
-    <form method="post"
-          action="{{ url_for('rider.cancel_order', order_id=order.id) }}">
-        {{ delete_form.csrf_token }}
-        <button type="submit" class="btn btn-danger mb-2"
-                id="calc">
-            Cancel
-        </button>
-    </form>
+{% block content_section %}
+
+    {% block order_data %}
+        <h1>Current order</h1>
+        <ul>
+            <li>Distance: {{ (current_order.route.x1 - current_order.route.x2)|abs +
+                                (current_order.route.y1 - current_order.route.y2)|abs }}</li>
+            <li>Start:
+                ({{ current_order.route.x1 }}, {{ current_order.route.y1 }})
+            </li>
+            <li>Destination:
+                ({{ current_order.route.x2 }}, {{ current_order.route.y2 }})
+            </li>
+            <li>People count: {{ current_order.people_count }}</li>
+        </ul>
+    {% endblock %}
+
+    {% block form %}
+        <form method="post"
+              action="{{ url_for('rider.cancel_order', order_id=current_order.id) }}">
+            {{ delete_form.csrf_token }}
+            <button type="submit" class="btn btn-danger mb-2"
+                    id="calc">
+                Cancel
+            </button>
+        </form>
+    {% endblock %}
 {% endblock %}
 

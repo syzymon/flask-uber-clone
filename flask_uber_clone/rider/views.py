@@ -8,13 +8,13 @@ from flask import (
     render_template,
     request,
     url_for,
-)
+    abort)
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_paginate import get_page_parameter, Pagination
 
 from flask_uber_clone.utils import flash_errors
 from .forms import RiderLoginForm, RiderRegisterForm, NewOrderForm, \
-    CancelOrderForm
+    CancelOrderForm, RateOrderForm
 from .models import Rider, Route, PendingOrder
 
 blueprint = Blueprint("rider", __name__, static_folder="../static")
@@ -46,8 +46,9 @@ def home():
     if current_user.pending_order:
         delete_form = CancelOrderForm()
         return render_template("rider/order.html",
-                               order=current_user.pending_order,
                                delete_form=delete_form)
+    elif current_user.taken_order:
+        return render_template("rider/taken.html")
 
     order_form = NewOrderForm(request.form)
 
@@ -107,6 +108,31 @@ def history():
     return render_template("rider/history.html",
                            orders=orders,
                            pagination=pagination)
+
+
+@blueprint.route("/finished/<int:finished_id>", methods=["GET", "POST"])
+@login_required
+def finished(finished_id):
+    order = current_user.finished_orders.filter_by(id=finished_id).one_or_none()
+    if order is None:
+        abort(404)
+
+    form = RateOrderForm(request.form)
+    if request.method == "GET":
+        if order.rating:
+            form.mark.data = int(order.rating)
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            current_app.logger.debug(order.id)
+            order.update(rating=form.mark.data)
+
+            return redirect(url_for("rider.history"))
+        else:
+            flash_errors(form)
+
+    return render_template("rider/finished.html", finished_order=order,
+                           form=form)
 
 
 @blueprint.route("/login/", methods=["GET", "POST"])

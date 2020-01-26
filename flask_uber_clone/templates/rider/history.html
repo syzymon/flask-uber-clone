@@ -1,6 +1,8 @@
 {% extends "rider/base.html" %}
 
 {% block content_section %}
+    <h1>Most recent trips</h1>
+
     {{ pagination.links }}
 
     {% for order in orders %}
@@ -16,9 +18,13 @@
                            aria-hidden="true"></i>
                         ({{ order.route.x2 }}, {{ order.route.y2 }})</h6>
                     {% if not order.rating %}
-                        <a href="#" class="stretched-link">Rate the trip</a>
+                        <a href="{{ url_for("rider.finished", finished_id=order.id) }}"
+                           class="stretched-link">Rate the trip</a>
                     {% else %}
                         {{ order.rating }}
+
+                        <a href="{{ url_for("rider.finished", finished_id=order.id) }}"
+                           class="stretched-link">Edit rating</a>
                     {% endif %}
                 </div>
 

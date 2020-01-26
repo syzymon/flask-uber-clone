@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Rider forms."""
 from flask_wtf import FlaskForm
-
-from flask_uber_clone.user.forms import LoginForm, RegisterForm
 from wtforms.fields.html5 import IntegerField
 from wtforms.validators import DataRequired, NumberRange
+
+from flask_uber_clone.user.forms import LoginForm, RegisterForm
 from .models import Rider
 
 
@@ -35,3 +35,8 @@ class NewOrderForm(FlaskForm):
 
 class CancelOrderForm(FlaskForm):
     pass
+
+
+class RateOrderForm(FlaskForm):
+    mark = IntegerField("Rate",
+                        validators=[DataRequired(), NumberRange(min=1, max=5)])
