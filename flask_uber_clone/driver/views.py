@@ -11,9 +11,11 @@ from flask import (
     url_for,
 )
 from flask_login import login_required, login_user, logout_user, current_user
+from flask_paginate import Pagination, get_page_parameter
 
 from flask_uber_clone.utils import flash_errors
 from .models import Driver
+from flask_uber_clone.rider.models import Order
 from .forms import DriverLoginForm, DriverRegisterForm
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
@@ -40,9 +42,22 @@ def on_load(state):
 
 
 @blueprint.route("/", methods=["GET"])
+@login_required
 def home():
-    form = DriverLoginForm()
-    return render_template("driver/index.html", form=form)
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    orders = Order.query
+    pagination = Pagination(page=page, total=orders.count(), search=search,
+                            bs_version=4,
+                            record_name='orders')
+
+    return render_template("driver/index.html", orders=orders,
+                           pagination=pagination)
 
 
 @blueprint.route("/login", methods=["GET", "POST"])

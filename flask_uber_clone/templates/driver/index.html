@@ -1,2 +1,55 @@
 {% extends "layout.html" %}
 
+{% block content %}
+    <div class="container">
+        <div class="table-responsive">
+            {{ pagination.links }}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>x1</th>
+                    <th>y1</th>
+                    <th>x2</th>
+                    <th>y2</th>
+                    <th>places</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ loop.index + pagination.skip }}</td>
+                        <td>{{ order.route.x1 }}</td>
+                        <td>{{ order.route.y1 }}</td>
+                        <td>{{ order.route.x2 }}</td>
+                        <td>{{ order.route.y2 }}</td>
+                        <td>{{ order.people_count }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        {{ pagination.info }}
+        {{ pagination.links }}
+    </div>
+
+    <style>
+        .pagination-page-info {
+            padding: .6em;
+            padding-left: 0;
+            width: 40em;
+            margin: .5em;
+            margin-left: 0;
+            font-size: 12px;
+        }
+
+        .pagination-page-info b {
+            color: black;
+            background: #6aa6ed;
+            padding-left: 2px;
+            padding: .1em .25em;
+            font-size: 150%;
+        }
+    </style>
+{% endblock %}

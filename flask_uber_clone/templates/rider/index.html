@@ -17,59 +17,56 @@
     <div class="container">
         <form id="registerForm" class="form form-register" method="POST"
               action="" role="form">
+            {{ order_form.csrf_token }}
             <div class="form-row align-items-center">
                 <div class="form-row">
                     <div class="col-auto">
-                        <label for="x1">Pickup x</label>
+                        {{ order_form.x1.label }}
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">X</div>
                             </div>
-                            <input type="number" class="form-control"
-                                   id="x1" placeholder="0">
+                            {{ order_form.x1(placeholder=0, class_="form-control") }}
                         </div>
                     </div>
 
                     <div class="col-auto">
-                        <label for="y1">Pickup y</label>
+                        {{ order_form.y1.label }}
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">Y</div>
                             </div>
-                            <input type="number" class="form-control"
-                                   id="y1" placeholder="0">
+                            {{ order_form.y1(placeholder=0, class_="form-control") }}
                         </div>
                     </div>
                 </div>
 
                 <div class="form-row mt-3 mb-3">
                     <div class="col-auto">
-                        <label for="x2">Destination x</label>
+                        {{ order_form.x2.label }}
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">X</div>
                             </div>
-                            <input type="number" class="form-control"
-                                   id="x2" placeholder="0">
+                            {{ order_form.x2(placeholder=0, class_="form-control") }}
                         </div>
                     </div>
 
                     <div class="col-auto">
+                        {{ order_form.y2.label }}
                         <label for="y2">Destination y</label>
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">Y</div>
                             </div>
-                            <input type="number" class="form-control"
-                                   id="y2" placeholder="0">
+                            {{ order_form.y2(placeholder=0, class_="form-control") }}
                         </div>
                     </div>
 
                     <div class="col-auto">
-                        <label for="ppl_cnt">How many people?</label>
+                        {{ order_form.ppl_cnt.label }}
                         <div class="input-group mb-2">
-                            <input type="number" class="form-control"
-                                   id="ppl_cnt" placeholder="1">
+                            {{ order_form.ppl_cnt(placeholder=1, class_="form-control") }}
                         </div>
                     </div>
                 </div>

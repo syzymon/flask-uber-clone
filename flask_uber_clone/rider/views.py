@@ -12,10 +12,10 @@ from flask import (
 from flask_login import login_user, login_required, current_user, logout_user
 
 from flask_uber_clone.utils import flash_errors
-from flask_uber_clone.extensions import login_manager
 
-from .models import Rider
-from .forms import RiderLoginForm, RiderRegisterForm
+from .models import Rider, Route, Order
+from .forms import RiderLoginForm, RiderRegisterForm, NewOrderForm, \
+    CancelOrderForm
 
 blueprint = Blueprint("rider", __name__, static_folder="../static")
 
@@ -40,13 +40,56 @@ def on_load(state):
         blueprint.name] = 'rider.login'
 
 
-@blueprint.route("/", methods=["GET"])
+@blueprint.route("/", methods=["GET", "POST"])
+@login_required
 def home():
-    form = RiderLoginForm()
-    return render_template("rider/index.html", form=form)
+    order_form = NewOrderForm(request.form)
+
+    existing_order = Order.query.filter_by(rider_id=current_user.id).first()
+    if existing_order:
+        delete_form = CancelOrderForm()
+        return render_template("rider/order.html", order=existing_order,
+                               delete_form=delete_form)
+
+    if request.method == "POST":
+        if order_form.validate_on_submit():
+            route = Route.create(
+                x1=order_form.x1.data,
+                y1=order_form.y1.data,
+                x2=order_form.x2.data,
+                y2=order_form.y2.data
+            )
+
+            Order.create(
+                rider_id=current_user.id,
+                route_id=route.id,
+                people_count=order_form.ppl_cnt.data
+            )
+
+            return redirect(url_for("rider.home"))
+        else:
+            flash_errors(order_form)
+
+    return render_template("rider/index.html", order_form=order_form)
 
 
-@blueprint.route("/login", methods=["GET", "POST"])
+@blueprint.route("/order/<int:order_id>/delete", methods=["POST"])
+@login_required
+def cancel_order(order_id):
+    form = CancelOrderForm(request.form)
+    if form.validate_on_submit():
+        order = Order.query.get_or_404(order_id)
+
+        if order and order.rider_id == current_user.id:
+            order.delete()
+            flash("Order deleted", "info")
+    else:
+        flash_errors(form)
+
+    return redirect(url_for("rider.home"))
+
+
+@blueprint.route("/login/", methods=["GET", "POST"])
 def login():
     """Rider login."""
     if current_user.is_authenticated:
