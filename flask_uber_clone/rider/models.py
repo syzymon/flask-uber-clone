@@ -3,6 +3,7 @@
 import datetime
 
 from sqlalchemy.ext.declarative.base import declared_attr
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 from flask_uber_clone.database import (
     db,
@@ -35,9 +36,21 @@ class Route(SurrogatePK, Model):
     x2 = Column(db.Integer, nullable=False)
     y2 = Column(db.Integer, nullable=False)
 
-    @property
+    @hybrid_property
     def length(self):
         return abs(self.x1 - self.x2) + abs(self.y1 - self.y2)
+
+    @length.expression
+    def length(cls):
+        return db.func.abs(cls.x1 - cls.x2) + db.func.abs(cls.y1 - cls.y2)
+
+    @hybrid_method
+    def distance(self, x, y):
+        return abs(self.x1 - x) + abs(self.y1 - y)
+
+    @distance.expression
+    def distance(cls, x, y):
+        return db.func.abs(cls.x1 - x) + db.func.abs(cls.y1 - y)
 
 
 class OrderState(SurrogatePK, Model):
@@ -60,7 +73,7 @@ class OrderState(SurrogatePK, Model):
 
     @declared_attr
     def route(cls):
-        return relationship("Route")
+        return relationship("Route", uselist=False)
 
 
 class PendingOrder(OrderState):

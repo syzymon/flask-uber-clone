@@ -12,10 +12,10 @@ from flask import (
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_paginate import Pagination, get_page_parameter
 
-from flask_uber_clone.rider.models import PendingOrder
+from flask_uber_clone.rider.models import Route, PendingOrder
 from flask_uber_clone.utils import flash_errors
 from .forms import DriverLoginForm, DriverRegisterForm, AcceptOrderForm, \
-    FinishOrderForm
+    FinishOrderForm, LocationForm
 from .models import Driver, TakenOrder, FinishedOrder
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
@@ -41,7 +41,7 @@ def on_load(state):
         blueprint.name] = 'driver.login'
 
 
-@blueprint.route("/", methods=["GET"])
+@blueprint.route("/", methods=["GET", "POST"])
 @login_required
 def home():
     if current_user.taken_order:
@@ -50,25 +50,39 @@ def home():
                                finish_form=finish_form,
                                order=current_user.taken_order)
 
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
-
     page = request.args.get(get_page_parameter(), type=int, default=1)
     per_page = 15
     offset = (page - 1) * per_page
 
-    orders_query = PendingOrder.query
-    orders = orders_query.limit(per_page).offset(offset)
+    location_form = LocationForm(request.form)
+
+    orders_query = PendingOrder.query.join(Route)
+    orders_sorted = orders_query.order_by(Route.length.desc())
+
+    coords = (0, 0)
+
+    if request.method == "POST":
+        if location_form.validate_on_submit():
+            orders_sorted = orders_query.order_by(Route.distance(
+                x=location_form.x.data,
+                y=location_form.y.data
+            ))
+
+            coords = (location_form.x.data,
+                      location_form.y.data)
+        else:
+            flash_errors(location_form)
+
+    orders = orders_sorted.limit(per_page).offset(offset)
 
     pagination = Pagination(page=page, per_page=per_page,
-                            total=orders_query.count(),
-                            search=search,
+                            total=orders_sorted.count(),
                             bs_version=4,
                             record_name='orders')
 
     return render_template("driver/index.html", orders=orders,
+                           location_form=location_form,
+                           coords=coords,
                            pagination=pagination)
 
 
@@ -87,7 +101,8 @@ def order(order_id):
             pending.delete()
             return redirect(url_for("driver.home"))
 
-    return render_template("driver/order.html", order=pending, accept_form=form)
+    return render_template("driver/order.html", order=pending,
+                           accept_form=form)
 
 
 @blueprint.route("/order/<int:order_id>/finish", methods=["POST"])
@@ -108,6 +123,18 @@ def finish_order(order_id):
         flash_errors(form)
 
     return redirect(url_for("driver.home"))
+
+
+@blueprint.route("/history", methods=["GET"])
+@login_required
+def history():
+    pass
+
+
+@blueprint.route("/profile", methods=["GET"])
+@login_required
+def profile():
+    pass
 
 
 @blueprint.route("/login", methods=["GET", "POST"])

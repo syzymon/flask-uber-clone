@@ -1,39 +1,66 @@
-{% extends "layout.html" %}
+{% extends "driver/base.html" %}
 
-{% block content %}
-    <div class="container">
-        <div class="table-responsive">
-            {{ pagination.links }}
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>x1</th>
-                    <th>y1</th>
-                    <th>x2</th>
-                    <th>y2</th>
-                    <th>places</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for order in orders %}
-                    <tr class='clickable-row'
-                        data-href='{{ url_for('driver.order', order_id=order.id) }}'>
-                        <td>{{ loop.index + pagination.skip }}</td>
-                        <td>{{ order.route.x1 }}</td>
-                        <td>{{ order.route.y1 }}</td>
-                        <td>{{ order.route.x2 }}</td>
-                        <td>{{ order.route.y2 }}</td>
-                        <td>{{ order.people_count }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
+{% block content_section %}
+    <form id="sortForm" class="form form-sort" method="POST"
+          action="" role="form">
+        {{ location_form.csrf_token }}
+        <div class="form-row align-items-center mt-2">
+            <div class="col-auto">
+                {{ location_form.x.label(class_="sr-only") }}
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">x</div>
+                    </div>
+                    {{ location_form.x(placeholder=21, class_="form-control") }}
+                </div>
+            </div>
+            <div class="col-auto">
+                {{ location_form.y.label(class_="sr-only") }}
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">y</div>
+                    </div>
+                    {{ location_form.y(placeholder=37, class_="form-control") }}
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-success mb-2">Sort
+                </button>
+            </div>
         </div>
+    </form>
+
+    <div class="table-responsive">
+        {{ pagination.links }}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Distance</th>
+                <th>Length</th>
+                <th>Pickup</th>
+                <th>Destination</th>
+                <th>places</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr class='clickable-row'
+                    data-href='{{ url_for('driver.order', order_id=order.id) }}'>
+                    <td>{{ loop.index + pagination.skip }}</td>
+                    <td>{{ order.route.distance(coords[0], coords[1]) }}</td>
+                    <td>{{ order.route.length }}</td>
+                    <td>({{ order.route.x1 }}, {{ order.route.y1 }})</td>
+                    <td>({{ order.route.x2 }}, {{ order.route.y2 }})</td>
+                    <td>{{ order.people_count }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         {{ pagination.info }}
         {{ pagination.links }}
     </div>
+
 
     <style>
         .pagination-page-info {
