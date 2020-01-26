@@ -7,8 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
-    url_for,
-    current_app)
+    url_for)
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_paginate import Pagination, get_page_parameter
 
@@ -16,7 +15,7 @@ from flask_uber_clone.rider.models import PendingOrder
 from flask_uber_clone.utils import flash_errors
 from .forms import DriverLoginForm, DriverRegisterForm, AcceptOrderForm, \
     FinishOrderForm
-from .models import Driver, TakenOrder
+from .models import Driver, TakenOrder, FinishedOrder
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
 
@@ -75,6 +74,9 @@ def home():
 @blueprint.route("/order/<int:order_id>", methods=["GET", "POST"])
 @login_required
 def order(order_id):
+    # if current_user.taken_order:
+    #     return redirect(url_for("driver.home"))
+
     pending = PendingOrder.query.get_or_404(order_id)
     form = AcceptOrderForm(request.form)
 
@@ -94,7 +96,9 @@ def finish_order(order_id):
     form = FinishOrderForm(request.form)
 
     if form.validate_on_submit():
-        current_app.logger.info("Valid!")
+        # TODO: transactions?
+        FinishedOrder.create_from_taken(taken)
+        taken.delete()
 
     return redirect(url_for("driver.home"))
 

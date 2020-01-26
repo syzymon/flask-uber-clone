@@ -27,9 +27,11 @@ def load_user(user_id):
     :return: user or none
     """
     # http://librelist.com/browser/flask/2012/4/7/current-blueprint/#44814417e8289f5f5bb9683d416ee1ee
+    if not request.endpoint:
+        return None
+
     blueprint = globals.current_app.blueprints[request.blueprint]
 
-    print(blueprint)
     if hasattr(blueprint, "load_user"):
         return blueprint.load_user(user_id)
 

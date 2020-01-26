@@ -52,11 +52,6 @@ class TakenOrder(OrderState):
 
     taken = Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    __mapper_args__ = {
-        "polymorphic_identity": "jobs",
-        "concrete": True
-    }
-
     @classmethod
     def create_from_pending(cls, pending: PendingOrder, driver_id: int):
         return cls.create(
@@ -66,3 +61,37 @@ class TakenOrder(OrderState):
             issued=pending.issued,
             driver_id=driver_id
         )
+
+    __mapper_args__ = {
+        "polymorphic_identity": "jobs",
+        "concrete": True
+    }
+
+
+class FinishedOrder(OrderState):
+    __tablename__ = "finished"
+
+    driver_id = reference_col("drivers")
+    driver = relationship("Driver",
+                          backref=db.backref("finished_orders"))
+
+    rating = Column(db.Float, nullable=True)
+
+    taken = Column(db.DateTime)
+    finished = Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    @classmethod
+    def create_from_taken(cls, taken_order: TakenOrder):
+        return cls.create(
+            rider_id=taken_order.rider_id,
+            route_id=taken_order.route_id,
+            people_count=taken_order.people_count,
+            issued=taken_order.issued,
+            driver_id=taken_order.driver_id,
+            taken=taken_order.taken
+        )
+
+    __mapper_args__ = {
+        "polymorphic_identity": "finished",
+        "concrete": True
+    }
