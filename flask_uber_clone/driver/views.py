@@ -219,12 +219,14 @@ def register():
             email=form.email.data,
             password=form.password.data,
             active=True,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data
         )
         flash("Thank you for registering. You can now log in.", "success")
         return redirect(url_for("driver.home"))
     else:
         flash_errors(form)
-    return render_template("public/register.html", form=form)
+    return render_template("driver/register.html", form=form)
 
 
 @blueprint.route("/logout/")
