@@ -179,7 +179,7 @@ def vehicle(vehicle_id):
 @login_required
 def select_vehicle(vehicle_id):
     current_user.update(current_car_id=vehicle_id)
-    return redirect(url_for("driver.home"))
+    return redirect(url_for("driver.vehicles"))
 
 
 @blueprint.route("/login", methods=["GET", "POST"])

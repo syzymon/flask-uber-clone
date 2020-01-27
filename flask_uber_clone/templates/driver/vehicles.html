@@ -11,10 +11,14 @@
             <img src="https://via.placeholder.com/120" class="mr-3" alt="...">
             <div class="media-body row">
                 <div class="col">
-                    <a class="text-decoration-none"
-                       href="{{ url_for('driver.vehicle', vehicle_id=car.id) }}">
-                        <h2 class="mt-0">{{ car.car_name }}</h2>
-                    </a>
+
+                    <h2 class="mt-0"><a class="text-decoration-none"
+                                        href="{{ url_for('driver.vehicle', vehicle_id=car.id) }}">{{ car.car_name }}</a>
+                        {% if current_user.current_car.id == car.id %}
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        {% endif %}
+                    </h2>
+
 
                     <h4><i class="fa fa-id-card-o" aria-hidden="true"></i>
                         {{ car.lic_plate }}</h4>

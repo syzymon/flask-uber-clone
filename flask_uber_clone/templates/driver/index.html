@@ -1,6 +1,25 @@
 {% extends "driver/base.html" %}
 
 {% block content_section %}
+    {% if not current_user.current_car %}
+        <div class="alert alert-info mt-2" role="alert">
+            You haven't selected any cars yet - <a
+                href="{{ url_for('driver.add_vehicle') }}" class="alert-link">add
+            new vehicle
+        </a> or <a
+                href="{{ url_for('driver.vehicles') }}" class="alert-link">select
+            from existing ones
+        </a>
+        </div>
+    {% else %}
+        <div class="alert alert-success mt-2" role="alert">
+            Your current car is capable of transporting up to
+            <b>{{ current_user.current_car.places_count }}</b> passengers.
+            <a href="{{ url_for('driver.vehicles') }}" class="alert-link">Select
+                a new one</a> to be able to take more.
+        </div>
+    {% endif %}
+
     <form id="sortForm" class="form form-sort" method="POST"
           action="" role="form">
         {{ location_form.csrf_token }}
@@ -83,7 +102,6 @@
         .clickable-row {
             cursor: pointer;
         }
-
     </style>
 {% endblock %}
 
