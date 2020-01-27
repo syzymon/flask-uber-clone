@@ -1,0 +1,12 @@
+{% extends "public/register.html" %}
+
+{% block additional_fields %}
+    <div class="form-group">
+                {{form.first_name.label}}
+                {{form.first_name(placeholder="Grzegorz", class_="form-control")}}
+    </div>
+    <div class="form-group">
+                {{form.last_name.label}}
+                {{form.last_name(placeholder="Brzęczyszczykiewicz", class_="form-control")}}
+    </div>
+{% endblock %}

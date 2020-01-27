@@ -23,6 +23,8 @@
                 {{form.confirm.label}}
                 {{form.confirm(placeholder="Password (again)", class_="form-control")}}
             </div>
+
+            {% block additional_fields %} {% endblock %}
             <p><input class="btn btn-primary" type="submit" value="Register"></p>
     </form>
     <p><em>Already registered?</em> Click <a href="{{ url_for(request.blueprint + '.login') }}">here</a> to login.</p>

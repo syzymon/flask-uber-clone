@@ -13,6 +13,12 @@ class DriverRegisterForm(RegisterForm):
     """Rider register form."""
     USER_MODEL = Driver
 
+    first_name = StringField(label="First name (optional)",
+                             validators=[Length(max=30)])
+
+    last_name = StringField(label="Last name (optional)",
+                            validators=[Length(max=30)])
+
 
 class DriverLoginForm(LoginForm):
     """Rider login form."""
