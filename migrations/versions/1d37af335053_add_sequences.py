@@ -27,4 +27,11 @@ def upgrade():
 
 
 def downgrade():
+    op.execute(sa.schema.DropSequence(sa.Sequence("cars_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("drivers_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("jobs_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("finished_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("riders_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("routes_id_seq")))
+    op.execute(sa.schema.DropSequence(sa.Sequence("orders_id_seq")))
     pass
