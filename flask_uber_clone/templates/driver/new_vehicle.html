@@ -1,0 +1,34 @@
+{% extends "driver/base.html" %}
+
+{% block content_section %}
+    <h1>New car</h1>
+
+    <form id="registerForm" class="form form-register" method="POST"
+          action="" role="form">
+        {{ car_form.csrf_token }}
+        <div class="form-row">
+            <div class="col-auto">
+                {{ car_form.car_name.label }}
+                {{ car_form.car_name(placeholder="Name", class_="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-row mt-1 mb-2">
+            <div class="col-auto">
+                {{ car_form.lic_plate.label }}
+                {{ car_form.lic_plate(placeholder="ABC12345", class_="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-row mt-1 mb-2">
+            <div class="col-auto">
+                {{ car_form.places_count.label }}
+                {{ car_form.places_count(placeholder=5, class_="form-control") }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mb-2" id="calc">
+            Add vehicle
+        </button>
+    </form>
+{% endblock %}

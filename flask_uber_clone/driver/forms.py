@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Rider forms."""
 from flask_wtf import FlaskForm
+from wtforms import StringField
 from wtforms.fields.html5 import IntegerField, DecimalField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Length
 
 from flask_uber_clone.user.forms import LoginForm, RegisterForm
 from .models import Driver
@@ -33,3 +34,18 @@ class LocationForm(FlaskForm):
                      validators=[DataRequired(), NumberRange(-100, 100)])
     y = IntegerField(label="Y",
                      validators=[DataRequired(), NumberRange(-100, 100)])
+
+
+class CarForm(FlaskForm):
+    car_name = StringField(label="Car name",
+                           validators=[Length(max=25)])
+
+    lic_plate = StringField(label="License plates",
+                            validators=[DataRequired(), Length(min=1, max=16)])
+
+    places_count = IntegerField(label="Places count",
+                                validators=[DataRequired(), NumberRange(1, 9)])
+
+
+class SelectCarForm(FlaskForm):
+    car_id = IntegerField(label="Car id", validators=[DataRequired()])

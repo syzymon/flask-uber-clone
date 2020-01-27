@@ -1,0 +1,29 @@
+{% extends "driver/base.html" %}
+
+{% block content_section %}
+    <a class="btn mt-3 btn-lg btn-success" role="button"
+       href="{{ url_for('driver.add_vehicle') }}">
+        <i class="fa fa-plus"></i> New vehicle
+    </a>
+
+    {% for car in current_user.cars %}
+        <div class="media border position-relative mt-3">
+            <img src="https://via.placeholder.com/120" class="mr-3" alt="...">
+            <div class="media-body row">
+                <div class="col">
+                    <a class="text-decoration-none"
+                       href="{{ url_for('driver.vehicle', vehicle_id=car.id) }}">
+                        <h2 class="mt-0">{{ car.car_name }}</h2>
+                    </a>
+
+                    <h4><i class="fa fa-id-card-o" aria-hidden="true"></i>
+                        {{ car.lic_plate }}</h4>
+
+                    <h3><i class="fa fa-users text-success"
+                           aria-hidden="true"></i>
+                        {{ car.places_count }}</h3>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

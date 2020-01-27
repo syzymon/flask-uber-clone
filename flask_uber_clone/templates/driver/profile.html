@@ -1,1 +1,39 @@
 {% extends "driver/base.html" %}
+
+{% block content_section %}
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <img src="https://image.ibb.co/jw55Ex/def_face.jpg"
+                     class="img img-rounded img-fluid"/>
+            </div>
+            <div class="col-md-10">
+                <p>
+                    <a class="float-left display-3 text-decoration-none"
+                       href="{{ url_for('driver.profile') }}"><strong>
+                        {{ current_user.full_name }}
+                    </strong></a>
+
+
+                    {% for i in range(current_user.rating | int ) %}
+                        <span class="float-right h1"><i
+                                class="text-warning fa fa-star"></i></span>
+                    {% endfor %}
+
+                    <span class="float-right h1"><i class="fa fa-line-chart"
+                                                    aria-hidden="true"></i>
+                             {{ current_user.rating | round(2) }}&nbsp</span>
+                </p>
+                <div class="clearfix"></div>
+                <h3>{{ current_user.finished_orders.count() }} orders finished so far.
+                </h3>
+
+                <p>
+                    <a class="float-right btn text-white btn-danger"> <i
+                            class="fa fa-trash"></i>Delete account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

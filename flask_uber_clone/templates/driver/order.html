@@ -1,16 +1,21 @@
-{% extends "layout.html" %}
+{% extends "driver/base.html" %}
 
-{% block content %}
-    <div class="container">
-        <h1>Order {{ order.route.id }}</h1>
-        <ul>
-            <li>Distance: {{ (order.route.x1 - order.route.x2)|abs +
+{% block content_section %}
+    <h1>Order {{ order.route.id }}</h1>
+    <ul>
+        <li>Distance: {{ (order.route.x1 - order.route.x2)|abs +
                             (order.route.y1 - order.route.y2)|abs }}</li>
-            <li>Start: ({{ order.route.x1 }}, {{ order.route.y1 }})</li>
-            <li>Destination: ({{ order.route.x2 }}, {{ order.route.y2 }})</li>
-            <li>People count: {{ order.people_count }}</li>
-        </ul>
+        <li>Start: ({{ order.route.x1 }}, {{ order.route.y1 }})</li>
+        <li>Destination: ({{ order.route.x2 }}, {{ order.route.y2 }})</li>
+        <li>People count: {{ order.people_count }}</li>
+    </ul>
 
+    {% if not current_user.current_car
+     or current_user.current_car.places_count < order.people_count %}
+        <div class="alert alert-danger" role="alert">
+            Your current car is too small to take this order.
+        </div>
+    {% else %}
         <form method="post"
               action="{{ url_for('driver.order', order_id=order.id) }}">
             {{ accept_form.csrf_token }}
@@ -18,5 +23,5 @@
                 Take
             </button>
         </form>
-    </div>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends "driver/base.html" %}
+
+{% block content_section %}
+    <h1 class="mt-2"><i class="fa fa-taxi" aria-hidden="true"></i> {{ vehicle.car_name }}
+    </h1>
+    <ul>
+        <li>License plates: <b>{{ vehicle.lic_plate }}</b></li>
+        <li>Places count: <b>{{ vehicle.places_count }}</b></li>
+    </ul>
+
+    <form method="post"
+          action="{{ url_for('driver.select_vehicle', vehicle_id=vehicle.id) }}">
+        {{ select_form.csrf_token }}
+        <button type="submit" class="btn btn-primary mb-2"
+                id="select">
+            Select car
+        </button>
+    </form>
+{% endblock %}

@@ -24,7 +24,8 @@ class Car(SurrogatePK, Model):
     lic_plate = Column(db.VARCHAR(16), nullable=True)
 
     current_driver_id = reference_col("drivers", nullable=True)
-    driver = relationship("Driver", backref=db.backref("car", uselist=False))
+    driver = relationship("Driver", foreign_keys=[current_driver_id],
+                          backref=db.backref("cars", lazy="dynamic"))
 
 
 class Driver(User):
@@ -34,6 +35,11 @@ class Driver(User):
     rating = Column(db.Float(precision=10, asdecimal=True), nullable=False,
                     default=0)
     experience = Column(db.Integer, nullable=False, default=0)
+
+    current_car_id = reference_col("cars", nullable=True)
+
+    current_car = relationship("Car", foreign_keys=[current_car_id],
+                               uselist=False)
 
     def get_id(self):
         return 2 * self.id + 1
@@ -83,15 +89,18 @@ class FinishedOrder(OrderState):
     taken = Column(db.DateTime)
     finished = Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    driver = relationship("Driver",
-                          backref=db.backref("finished_orders"))
-
     rider = relationship("Rider",
                          backref=db.backref(
                              "finished_orders",
                              order_by=finished.desc(),
                              lazy="dynamic")
                          )
+    driver = relationship("Driver",
+                          backref=db.backref(
+                              "finished_orders",
+                              order_by=finished.desc(),
+                              lazy="dynamic")
+                          )
 
     @classmethod
     def create_from_taken(cls, taken_order: TakenOrder):

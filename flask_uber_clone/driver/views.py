@@ -8,15 +8,16 @@ from flask import (
     redirect,
     render_template,
     request,
-    url_for)
+    url_for
+)
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_paginate import Pagination, get_page_parameter
 
 from flask_uber_clone.rider.models import Route, PendingOrder
 from flask_uber_clone.utils import flash_errors
 from .forms import DriverLoginForm, DriverRegisterForm, AcceptOrderForm, \
-    FinishOrderForm, LocationForm
-from .models import Driver, TakenOrder, FinishedOrder
+    FinishOrderForm, LocationForm, CarForm, SelectCarForm
+from .models import Driver, TakenOrder, FinishedOrder, Car
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
 
@@ -128,13 +129,57 @@ def finish_order(order_id):
 @blueprint.route("/history", methods=["GET"])
 @login_required
 def history():
-    pass
+    return render_template("driver/history.html")
 
 
 @blueprint.route("/profile", methods=["GET"])
 @login_required
 def profile():
-    pass
+    return render_template("driver/profile.html")
+
+
+@blueprint.route("/vehicles", methods=["GET"])
+@login_required
+def vehicles():
+    return render_template("driver/vehicles.html")
+
+
+@blueprint.route("/vehicles/add", methods=["GET", "POST"])
+@login_required
+def add_vehicle():
+    car_form = CarForm(request.form)
+
+    if request.method == "POST":
+        if car_form.validate_on_submit():
+            car = Car()
+            car_form.populate_obj(car)
+            car.current_driver_id = current_user.id
+            car.save()
+
+            return redirect(url_for("driver.vehicle", vehicle_id=car.id))
+        else:
+            flash_errors(car_form)
+
+    return render_template("driver/new_vehicle.html", car_form=car_form)
+
+
+@blueprint.route("/vehicle/<int:vehicle_id>", methods=["GET"])
+@login_required
+def vehicle(vehicle_id):
+    car = Car.query.get_or_404(vehicle_id)
+
+    select_form = SelectCarForm()
+    select_form.car_id.data = car.id
+
+    return render_template("driver/vehicle.html", vehicle=car,
+                           select_form=select_form)
+
+
+@blueprint.route("/vehicle/<int:vehicle_id>/select", methods=["POST"])
+@login_required
+def select_vehicle(vehicle_id):
+    current_user.update(current_car_id=vehicle_id)
+    return redirect(url_for("driver.home"))
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
