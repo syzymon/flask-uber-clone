@@ -23,8 +23,8 @@ class Car(SurrogatePK, Model):
     car_name = Column(db.VARCHAR(50), nullable=True)
     lic_plate = Column(db.VARCHAR(16), nullable=True)
 
-    current_driver_id = reference_col("drivers", nullable=True)
-    driver = relationship("Driver", foreign_keys=[current_driver_id],
+    owner_id = reference_col("drivers", nullable=True)
+    driver = relationship("Driver", foreign_keys=[owner_id],
                           backref=db.backref("cars", lazy="dynamic"))
 
 

@@ -153,7 +153,7 @@ def add_vehicle():
         if car_form.validate_on_submit():
             car = Car()
             car_form.populate_obj(car)
-            car.current_driver_id = current_user.id
+            car.owner_id = current_user.id
             car.save()
 
             return redirect(url_for("driver.vehicle", vehicle_id=car.id))
