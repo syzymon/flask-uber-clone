@@ -1,8 +1,8 @@
-"""Try FK
+"""Add FK
 
-Revision ID: eca71819cf1d
-Revises: 0342c138dea1
-Create Date: 2020-01-27 15:14:03.055436
+Revision ID: 982fc8c9327b
+Revises: 054318538ff3
+Create Date: 2020-01-27 15:28:31.847240
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'eca71819cf1d'
-down_revision = '0342c138dea1'
+revision = '982fc8c9327b'
+down_revision = '054318538ff3'
 branch_labels = None
 depends_on = None
 
@@ -21,13 +21,13 @@ def upgrade():
     op.create_foreign_key(None, 'cars', 'drivers', ['owner_id'], ['id'])
     op.create_foreign_key(None, 'drivers', 'cars', ['current_car_id'], ['id'])
     op.create_foreign_key(None, 'finished', 'drivers', ['driver_id'], ['id'])
-    op.create_foreign_key(None, 'finished', 'riders', ['rider_id'], ['id'])
     op.create_foreign_key(None, 'finished', 'routes', ['route_id'], ['id'])
-    op.create_foreign_key(None, 'jobs', 'routes', ['route_id'], ['id'])
-    op.create_foreign_key(None, 'jobs', 'drivers', ['driver_id'], ['id'])
+    op.create_foreign_key(None, 'finished', 'riders', ['rider_id'], ['id'])
     op.create_foreign_key(None, 'jobs', 'riders', ['rider_id'], ['id'])
-    op.create_foreign_key(None, 'orders', 'routes', ['route_id'], ['id'])
+    op.create_foreign_key(None, 'jobs', 'drivers', ['driver_id'], ['id'])
+    op.create_foreign_key(None, 'jobs', 'routes', ['route_id'], ['id'])
     op.create_foreign_key(None, 'orders', 'riders', ['rider_id'], ['id'])
+    op.create_foreign_key(None, 'orders', 'routes', ['route_id'], ['id'])
     # ### end Alembic commands ###
 
 

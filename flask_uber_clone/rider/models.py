@@ -19,6 +19,7 @@ from flask_uber_clone.user.models import User
 class Rider(User):
     """A user eligible to order a ride."""
     __tablename__ = "riders"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     def get_id(self):
         return 2 * self.id
@@ -30,6 +31,7 @@ class Rider(User):
 
 class Route(SurrogatePK, Model):
     __tablename__ = "routes"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     x1 = Column(db.Integer, nullable=False)
     y1 = Column(db.Integer, nullable=False)
@@ -78,6 +80,7 @@ class OrderState(SurrogatePK, Model):
 
 class PendingOrder(OrderState):
     __tablename__ = "orders"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     rider = relationship("Rider",
                          backref=db.backref("pending_order", uselist=False))

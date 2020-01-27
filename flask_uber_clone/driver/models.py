@@ -17,6 +17,7 @@ from flask_uber_clone.user.models import User
 class Car(SurrogatePK, Model):
     """A car used to drive passengers"""
     __tablename__ = "cars"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     places_count = Column(db.Integer, nullable=False)
 
@@ -31,6 +32,7 @@ class Car(SurrogatePK, Model):
 class Driver(User):
     """An employee allowed to drive."""
     __tablename__ = "drivers"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     rating = Column(db.Float(precision=10, asdecimal=True), nullable=False,
                     default=0)
@@ -51,6 +53,7 @@ class Driver(User):
 
 class TakenOrder(OrderState):
     __tablename__ = "jobs"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     driver_id = reference_col("drivers")
 
@@ -80,6 +83,7 @@ class TakenOrder(OrderState):
 
 class FinishedOrder(OrderState):
     __tablename__ = "finished"
+    id = db.Column(db.Integer, db.Sequence(__tablename__ + '_id_seq'), primary_key=True)
 
     driver_id = reference_col("drivers")
 
