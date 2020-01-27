@@ -47,6 +47,7 @@ def on_load(state):
 def home():
     if current_user.taken_order:
         finish_form = FinishOrderForm()
+        finish_form.fare_rate.data = 2.137
         return render_template("driver/taken_order.html",
                                finish_form=finish_form,
                                order=current_user.taken_order)
