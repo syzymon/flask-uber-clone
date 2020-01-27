@@ -34,6 +34,7 @@ Flask-DebugToolbar = "==0.10.1"
 environs = "==7.1.0"
 flask-paginate = "*"
 flask-seeder = "*"
+flask-breadcrumbs = "*"
 
 [dev-packages]
 # Testing

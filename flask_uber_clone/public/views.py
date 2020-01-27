@@ -9,10 +9,9 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_user
 
 from flask_uber_clone.rider.forms import RiderLoginForm
-from flask_uber_clone.rider.models import Rider
 from flask_uber_clone.utils import flash_errors
 
 blueprint = Blueprint("public", __name__, static_folder="../static")

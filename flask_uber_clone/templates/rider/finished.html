@@ -2,17 +2,6 @@
 
 {% set finished = finished_order %}
 
-{% block breadcrumb %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a
-                    href="{{ url_for('rider.history') }}">My Trips</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Rate Trip
-            </li>
-        </ol>
-    </nav>
-{% endblock %}
-
 {% block form %}
     <form method="post"
           action="{{ url_for('rider.finished', finished_id=current_order.id) }}">

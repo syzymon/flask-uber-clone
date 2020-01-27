@@ -74,7 +74,19 @@
                 </nav>
             {% endblock %}
 
-            {% block breadcrumb %} {% endblock %}
+            {% block breadcrumb %}
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {%- for breadcrumb in breadcrumbs -%}
+                            {% if breadcrumb.text != "Menu item not initialised" %}
+                            <li class="breadcrumb-item"><a
+                                    href="{{ breadcrumb.url }}">{{ breadcrumb.text }}</a>
+                            </li>
+                            {% endif %}
+                        {%- endfor -%}
+                    </ol>
+                </nav>
+            {% endblock %}
 
             <div class="container-fluid">
                 {% block content_section %} {% endblock %}

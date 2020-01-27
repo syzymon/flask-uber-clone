@@ -15,7 +15,8 @@ from flask_uber_clone.extensions import (
     flask_static_digest,
     login_manager,
     migrate,
-    flask_seeder
+    flask_seeder,
+    flask_breadcrumbs
 )
 
 
@@ -66,6 +67,7 @@ def register_extensions(app):
     migrate.init_app(app, db)
     flask_static_digest.init_app(app)
     flask_seeder.init_app(app, db)
+    flask_breadcrumbs.init_app(app, init_menu=False)
     return None
 
 
