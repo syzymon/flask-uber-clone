@@ -10,6 +10,7 @@ from flask import (
     request,
     url_for
 )
+from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_paginate import Pagination, get_page_parameter
 
@@ -20,6 +21,7 @@ from .forms import DriverLoginForm, DriverRegisterForm, AcceptOrderForm, \
 from .models import Driver, TakenOrder, FinishedOrder, Car
 
 blueprint = Blueprint("driver", __name__, static_folder="../static")
+default_breadcrumb_root(blueprint, '.driver')
 
 
 def load_user(user_id):
@@ -43,6 +45,7 @@ def on_load(state):
 
 
 @blueprint.route("/", methods=["GET", "POST"])
+@register_breadcrumb(blueprint, ".", "Driver")
 @login_required
 def home():
     if current_user.taken_order:
@@ -128,24 +131,28 @@ def finish_order(order_id):
 
 
 @blueprint.route("/history", methods=["GET"])
+@register_breadcrumb(blueprint, ".history", "Finished Jobs")
 @login_required
 def history():
     return render_template("driver/history.html")
 
 
 @blueprint.route("/profile", methods=["GET"])
+@register_breadcrumb(blueprint, ".profile", "Profile")
 @login_required
 def profile():
     return render_template("driver/profile.html")
 
 
 @blueprint.route("/vehicles", methods=["GET"])
+@register_breadcrumb(blueprint, ".vehicles", "Vehicles")
 @login_required
 def vehicles():
     return render_template("driver/vehicles.html")
 
 
 @blueprint.route("/vehicles/add", methods=["GET", "POST"])
+@register_breadcrumb(blueprint, ".vehicles.add", "New Vehicle")
 @login_required
 def add_vehicle():
     car_form = CarForm(request.form)

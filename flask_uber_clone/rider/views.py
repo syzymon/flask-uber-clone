@@ -9,6 +9,7 @@ from flask import (
     request,
     url_for,
     abort)
+from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_paginate import get_page_parameter, Pagination
 
@@ -18,6 +19,7 @@ from .forms import RiderLoginForm, RiderRegisterForm, NewOrderForm, \
 from .models import Rider, Route, PendingOrder
 
 blueprint = Blueprint("rider", __name__, static_folder="../static")
+default_breadcrumb_root(blueprint, '.rider')
 
 
 def load_user(user_id):
@@ -41,6 +43,7 @@ def on_load(state):
 
 
 @blueprint.route("/", methods=["GET", "POST"])
+@register_breadcrumb(blueprint, ".", "Rider")
 @login_required
 def home():
     if current_user.pending_order:
@@ -91,6 +94,7 @@ def cancel_order(order_id):
 
 
 @blueprint.route("/history", methods=["GET"])
+@register_breadcrumb(blueprint, ".history", "My Trips")
 @login_required
 def history():
     page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -111,6 +115,9 @@ def history():
 
 
 @blueprint.route("/finished/<int:finished_id>", methods=["GET", "POST"])
+@register_breadcrumb(blueprint, ".history.finished", "",
+                     dynamic_list_constructor=lambda: [
+                         {'text': "Finished order", 'url': ""}])
 @login_required
 def finished(finished_id):
     order = current_user.finished_orders.filter_by(id=finished_id).one_or_none()
