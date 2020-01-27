@@ -1,6 +1,3 @@
-{% extends "layout.html" %}
+{% extends "public/login_dispatch.html" %}
 
-{% block content %}
-    <a href="{{ url_for('rider.register') }}">Rider register</a> <br>
-    <a href="{{ url_for('driver.register') }}">Driver register</a>
-{% endblock %}
+{% set action = 'register' %}

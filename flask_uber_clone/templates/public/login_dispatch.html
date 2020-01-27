@@ -1,6 +1,46 @@
 {% extends "layout.html" %}
 
+{% if not action %}
+    {% set action = 'login' %}
+{% endif %}
+
 {% block content %}
-    <a href="{{ url_for('rider.login') }}">Rider login</a> <br>
-    <a href="{{ url_for('driver.login') }}">Driver login</a>
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+
+                <h1 class="display-4">Sign in</h1>
+            </div>
+        </div><!-- /.jumbotron -->
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa fa-car"
+                                                  aria-hidden="true"></i> Driver
+                            {{ action }}</h5>
+                        <p class="card-text">Find everything you need to track
+                            your success on the road.</p>
+                        <a href="{{ url_for('driver.' + action) }}"
+                           class="btn btn-primary">{{ action | capitalize }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa fa-user"
+                                                  aria-hidden="true"></i>
+                             Rider {{ action }}</h5>
+                        <p class="card-text">Manage your payment options, review
+                            trip history, and more.</p>
+                        <a href="{{ url_for('rider.' + action) }}"
+                           class="btn btn-primary">{{ action | capitalize }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
