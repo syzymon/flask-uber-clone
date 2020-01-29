@@ -28,7 +28,7 @@ class DemoSeeder(Seeder):
         )
 
         # Create 5 users
-        for order in order_faker.create(25):
+        for order in order_faker.create(1000):
             print(order)
             route = route_faker.create()[0]
             self.db.session.add(route)
